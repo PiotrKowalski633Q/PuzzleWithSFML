@@ -1,0 +1,8 @@
+This is setup file.
+First and second value will indicate the resolution of used image (its width and height in that order).
+Third and fourth value will indicate number of parts the image shall be split to (horizontal and vertical in that order).
+All four values given must be both positive and whole numbers for the program to work properly. Zeros are not allowed.
+Fifth and last variable should be the name of image you want to use and its extension.
+Note that for the best image display its resolution should not be lower than your current screen resolution and their propotions as close to each other as possible.
+#
+960 512 4 4 City.png
