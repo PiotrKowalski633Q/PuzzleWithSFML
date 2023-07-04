@@ -17,5 +17,10 @@ find_package(SFML 2.6.0 REQUIRED COMPONENTS audio graphics window system)
 include_directories(Dependencies/SFML-2.6.0/include)
 
 
-add_executable(PuzzleWithSFML Code/Sources/main.cpp)
+add_executable(PuzzleWithSFML
+        Code/Sources/main.cpp
+        Code/Headers/Piece.h
+        Code/Headers/Board.h
+        Code/Sources/Piece.cpp
+        Code/Sources/Board.cpp)
 target_link_libraries(PuzzleWithSFML sfml-audio sfml-graphics sfml-window sfml-system)
