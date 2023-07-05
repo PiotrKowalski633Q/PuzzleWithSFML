@@ -24,6 +24,7 @@ void Board::setImageInfo(float imageSizeX, float imageSizeY, std::string imageFi
 void Board::loadImage()
 {
     mImage.loadFromFile("Resources/Images/" + mImageFilename);    //image set should have resolution at least equal to the resolution of used screen, not lower, else it might be displayed incorrectly
+    //TODO retrieve image size here (mImage.imageSize()), then setImageInfo can be deleted
 }
 
 void Board::setValuesOfAllPieces()
