@@ -18,7 +18,7 @@ private:
 
     float mImageSizeX, mImageSizeY;
     sf::Texture mImage;
-    std::string mImageFilename;
+    //std::string mImageFilename;
 
     float mOffsetXBetweenPieces, mOffsetYBetweenPieces;
 
@@ -26,8 +26,7 @@ public:
     Board(int rows, int columns);
     ~Board();
 
-    void setImageInfo(float imageSizeX, float imageSizeY, std::string imageFilepath);
-    void loadImage();
+    void loadImage(std::string imageFilename);
     void setValuesOfAllPieces();
     void shufflePieces();
     Piece* identifyPieceByPosition(int positionX, int positionY);

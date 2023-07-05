@@ -11,7 +11,7 @@
 //TODO split main to functions (main loop)?, move setup elsewhere
 //TODO verify strange OpenAL warnings on some computers, is it because of disabled sound device?
 
-void setup(float *xMax, float *yMax, int *iMax, int *jMax, std::string *imageName);  //loads information about image size, name and number of parts it is to be divided into from setup file
+void setup(int *boardColumns, int *boardRows, std::string *imageName);  //loads information about image size, name and number of parts it is to be divided into from setup file
 
 int main()
 {
@@ -24,13 +24,13 @@ int main()
     //variables for the image related parameters
     float imageSizeX, imageSizeY; //width and length of the image
     int boardColumns, boardRows; //number of rows and columns the image will be divided into
-    std::string imageName; //name of the image and its extension
+    std::string imageFilename; //name of the image and its extension
 
     //setting up the playing board, its pieces, shuffling them and drawing for the first time
-    setup(&imageSizeX, &imageSizeY, &boardColumns, &boardRows, &imageName);
+    setup(&boardColumns, &boardRows, &imageFilename);
     Board board(boardColumns, boardRows);
-    board.setImageInfo(imageSizeX, imageSizeY, imageName);
-    board.loadImage();
+    //board.setImageInfo(imageSizeX, imageSizeY, imageName);
+    board.loadImage(imageFilename);
     board.setValuesOfAllPieces();
     board.shufflePieces();
     board.drawAll(window);
@@ -107,10 +107,16 @@ int main()
     return 0;
 }
 
-void setup(float *xMax, float *yMax, int *iMax, int *jMax, std::string *imageName)   //loads information about image size, name and number of parts it is to be divided into from setup file
+void setup(int *boardColumns, int *boardRows, std::string *imageName)   //loads information about image size, name and number of parts it is to be divided into from setup file
 {
-    char s;
+    char signBuffer;
     std::ifstream setupFile("Resources/setup.txt");
-    while (setupFile>>s) if (s=='#') setupFile>>*xMax>>*yMax>>*iMax>>*jMax>>*imageName;
+    while (setupFile>>signBuffer)
+    {
+        if (signBuffer=='#')
+        {
+            setupFile>>*boardColumns>>*boardRows>>*imageName;
+        }
+    }
     setupFile.close();
 }

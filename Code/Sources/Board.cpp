@@ -14,17 +14,11 @@ Board::~Board()
     delete[] mPuzzles;
 }
 
-void Board::setImageInfo(float imageSizeX, float imageSizeY, std::string imageFilename)
+void Board::loadImage(std::string imageFilename)
 {
-    mImageSizeX = imageSizeX;
-    mImageSizeY = imageSizeY;
-    mImageFilename = imageFilename;
-}
-
-void Board::loadImage()
-{
-    mImage.loadFromFile("Resources/Images/" + mImageFilename);    //image set should have resolution at least equal to the resolution of used screen, not lower, else it might be displayed incorrectly
-    //TODO retrieve image size here (mImage.imageSize()), then setImageInfo can be deleted
+    mImage.loadFromFile("Resources/Images/" + imageFilename);    //image set should have resolution at least equal to the resolution of used screen, not lower, else it might be displayed incorrectly
+    mImageSizeX = mImage.getSize().x;
+    mImageSizeY = mImage.getSize().y;
 }
 
 void Board::setValuesOfAllPieces()
