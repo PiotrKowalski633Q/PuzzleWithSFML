@@ -1,12 +1,11 @@
 #include "../Headers/Board.h"
 
-Board::Board(int rows, int columns)
+Board::Board(const std::string &setupFilepath)
 {
-    mRows = rows;
-    mColumns = columns;
-    mOffsetXBetweenPieces = ((float)ScreenX / mColumns);
-    mOffsetYBetweenPieces = ((float)ScreenY / mRows);
-    mPuzzles = new Piece[rows*columns];
+    setupBoardDataFromFile(setupFilepath);
+    loadImage();
+
+    mPuzzles = new Piece[mRows*mColumns];
 }
 
 Board::~Board()
@@ -14,9 +13,28 @@ Board::~Board()
     delete[] mPuzzles;
 }
 
-void Board::loadImage(std::string imageFilename)
+void Board::setupBoardDataFromFile(const std::string &filepath)
 {
-    mImage.loadFromFile("Resources/Images/" + imageFilename);    //image set should have resolution at least equal to the resolution of used screen, not lower, else it might be displayed incorrectly
+    char signBuffer;
+    std::string imageFilename;
+
+    std::ifstream setupFile(filepath);
+    while (setupFile>>signBuffer)
+    {
+        if (signBuffer=='#')
+        {
+            setupFile>>mColumns>>mRows>>mImageFilename;
+        }
+    }
+    setupFile.close();
+
+    mOffsetXBetweenPieces = ((float)ScreenX / mColumns);
+    mOffsetYBetweenPieces = ((float)ScreenY / mRows);
+}
+
+void Board::loadImage()
+{
+    mImage.loadFromFile("Resources/Images/" + mImageFilename);    //image set should have resolution at least equal to the resolution of used screen, not lower, else it might be displayed incorrectly
     mImageSizeX = mImage.getSize().x;
     mImageSizeY = mImage.getSize().y;
 }
@@ -53,21 +71,6 @@ void Board::shufflePieces()
     }
 }
 
-Piece* Board::identifyPieceByPosition(int positionX, int positionY)
-{
-    for (int rowNumber=0; rowNumber<mRows; rowNumber++)
-    {
-        for (int columnNumber=0; columnNumber<mColumns; columnNumber++)
-        {
-            if (mPuzzles[rowNumber*mColumns+columnNumber].isPositionWithinPiece(positionX, positionY, mOffsetXBetweenPieces, mOffsetYBetweenPieces))
-            {
-                return &(mPuzzles[rowNumber*mColumns+columnNumber]);
-            }
-        }
-    }
-    return nullptr; //TODO add cases for when this nullptr is returned (even though it never should, not in a properly setup board)
-}
-
 void Board::drawAll(sf::RenderWindow &window)
 {
     window.clear();
@@ -93,6 +96,21 @@ void Board::drawAll(sf::RenderWindow &window, Piece &movingPiece)
     }
     movingPiece.draw(window);  //added for purposes of drawing the moving piece on the top
     window.display();
+}
+
+Piece* Board::identifyPieceByPosition(int positionX, int positionY)
+{
+    for (int rowNumber=0; rowNumber<mRows; rowNumber++)
+    {
+        for (int columnNumber=0; columnNumber<mColumns; columnNumber++)
+        {
+            if (mPuzzles[rowNumber*mColumns+columnNumber].isPositionWithinPiece(positionX, positionY, mOffsetXBetweenPieces, mOffsetYBetweenPieces))
+            {
+                return &(mPuzzles[rowNumber*mColumns+columnNumber]);
+            }
+        }
+    }
+    return nullptr; //TODO add cases for when this nullptr is returned (even though it never should, not in a properly setup board)
 }
 
 bool Board::checkForVictory()

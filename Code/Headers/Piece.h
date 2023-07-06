@@ -10,7 +10,7 @@ private:
     int mIndexX, mIndexY;
     sf::Sprite mSprite;
 
-    float mAddedPositionX, mAddedPositionY;//TODO consider renaming to displacement
+    float mAddedPositionX, mAddedPositionY;//TODO consider renaming to mMovedDistance
 
 public:
     int getIndexX();

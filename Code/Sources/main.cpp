@@ -1,17 +1,14 @@
 #include <iostream>
-#include <fstream>
-#include <math.h>
-#include "SFML/Graphics.hpp"
-#include "SFML/Window.hpp"
-#include "SFML/System.hpp"
-#include "SFML/Audio.hpp"
+
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Audio.hpp>
 
 #include "../Headers/Board.h"
 
-//TODO split main to functions (main loop)?, move setup elsewhere
+//TODO split main to functions (main loop)?
 //TODO verify strange OpenAL warnings on some computers, is it because of disabled sound device?
-
-void setup(int *boardColumns, int *boardRows, std::string *imageName);  //loads information about image size, name and number of parts it is to be divided into from setup file
 
 int main()
 {
@@ -21,16 +18,8 @@ int main()
     //creating main window
     sf::RenderWindow window( sf::VideoMode( ScreenX, ScreenY, 32 ), "PuzzleWithSFML", sf::Style::Fullscreen );
 
-    //variables for the image related parameters
-    float imageSizeX, imageSizeY; //width and length of the image
-    int boardColumns, boardRows; //number of rows and columns the image will be divided into
-    std::string imageFilename; //name of the image and its extension
-
-    //setting up the playing board, its pieces, shuffling them and drawing for the first time
-    setup(&boardColumns, &boardRows, &imageFilename);
-    Board board(boardColumns, boardRows);
-    //board.setImageInfo(imageSizeX, imageSizeY, imageName);
-    board.loadImage(imageFilename);
+    //creating the playing board from a setup file, setting values of its pieces, shuffling them and drawing for the first time
+    Board board("Resources/setup.txt");
     board.setValuesOfAllPieces();
     board.shufflePieces();
     board.drawAll(window);
@@ -105,18 +94,4 @@ int main()
         }
     }
     return 0;
-}
-
-void setup(int *boardColumns, int *boardRows, std::string *imageName)   //loads information about image size, name and number of parts it is to be divided into from setup file
-{
-    char signBuffer;
-    std::ifstream setupFile("Resources/setup.txt");
-    while (setupFile>>signBuffer)
-    {
-        if (signBuffer=='#')
-        {
-            setupFile>>*boardColumns>>*boardRows>>*imageName;
-        }
-    }
-    setupFile.close();
 }

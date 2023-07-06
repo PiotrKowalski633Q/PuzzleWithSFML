@@ -1,8 +1,10 @@
 #ifndef PUZZLEWITHSFML_BOARD_H
 #define PUZZLEWITHSFML_BOARD_H
 
+#include <fstream>
+#include <wtypes.h>
+
 #include <SFML/Graphics.hpp>
-#include <wtypes.h> //purely for screen resolution
 
 #include "Piece.h"
 
@@ -13,27 +15,29 @@
 class Board
 {
 private:
-    Piece *mPuzzles;
+    Piece *mPuzzles;//TODO rename to mPieces for consistency
     int mRows, mColumns;
 
     float mImageSizeX, mImageSizeY;
     sf::Texture mImage;
-    //std::string mImageFilename;
+    std::string mImageFilename;
 
-    float mOffsetXBetweenPieces, mOffsetYBetweenPieces;
+    float mOffsetXBetweenPieces, mOffsetYBetweenPieces;//TODO mRowHeight and mColumnWidth?
 
 public:
-    Board(int rows, int columns);
+    Board(const std::string &setupFilepath);//TODO explicit?
     ~Board();
 
-    void loadImage(std::string imageFilename);
-    void setValuesOfAllPieces();
+    void setValuesOfAllPieces();//TODO this too can be integrated into constructor
     void shufflePieces();
-    Piece* identifyPieceByPosition(int positionX, int positionY);
     void drawAll(sf::RenderWindow &window);
     void drawAll(sf::RenderWindow &window, Piece &movingPiece);
+    Piece* identifyPieceByPosition(int positionX, int positionY);
     bool checkForVictory();//TODO hasWon?
 
+private:
+    void setupBoardDataFromFile(const std::string &filepath);
+    void loadImage();
 };
 
 #endif //PUZZLEWITHSFML_BOARD_H
