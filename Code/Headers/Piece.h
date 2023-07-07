@@ -8,9 +8,9 @@ class Piece
 private:
     float mPositionX, mPositionY;
     int mIndexX, mIndexY;
-    sf::Sprite mSprite;
+    float mMovedDistanceX, mMovedDistanceY;
 
-    float mAddedPositionX, mAddedPositionY;//TODO consider renaming to mMovedDistance
+    sf::Sprite mSprite;
 
 public:
     int getIndexX();
@@ -22,7 +22,6 @@ public:
     void draw(sf::RenderWindow &window);
     void movePieceByMouse(float displacementX, float displacementY);
     void restorePiecePosition();
-
 };
 
 #endif //PUZZLEWITHSFML_PIECE_H

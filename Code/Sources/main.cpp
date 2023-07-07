@@ -1,4 +1,5 @@
 #include <iostream>
+#include <wtypes.h>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -10,16 +11,19 @@
 //TODO split main to functions (main loop)?
 //TODO verify strange OpenAL warnings on some computers, is it because of disabled sound device?
 
+#define ScreenSizeX GetSystemMetrics(SM_CXSCREEN)
+#define ScreenSizeY GetSystemMetrics(SM_CYSCREEN)
+
 int main()
 {
     //randomizing the rand function seed
     srand(time(NULL));
 
     //creating main window
-    sf::RenderWindow window( sf::VideoMode( ScreenX, ScreenY, 32 ), "PuzzleWithSFML", sf::Style::Fullscreen );
+    sf::RenderWindow window( sf::VideoMode( ScreenSizeX, ScreenSizeY, 32 ), "PuzzleWithSFML", sf::Style::Fullscreen );
 
     //creating the playing board from a setup file, setting values of its pieces, shuffling them and drawing for the first time
-    Board board("Resources/setup.txt");
+    Board board(ScreenSizeX, ScreenSizeY, "Resources/setup.txt");
     board.setValuesOfAllPieces();
     board.shufflePieces();
     board.drawAll(window);
@@ -73,7 +77,7 @@ int main()
                     piece2 = board.identifyPieceByPosition(mousePressPositionX, mousePressPositionY);
                     Piece::swapPiecePositions(*piece1, *piece2);
                     board.drawAll(window);
-                    if (board.checkForVictory())
+                    if (board.arePiecesInCorrectOrder())
                     {
                         music.setPlayingOffset(sf::seconds(0));
                         victorySound.play();

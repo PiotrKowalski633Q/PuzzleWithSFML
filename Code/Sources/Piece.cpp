@@ -12,8 +12,8 @@ int Piece::getIndexY()
 
 void Piece::setValues(float positionX, float positionY, int indexX, int indexY, float scaleX, float scaleY, sf::Texture &image, sf::IntRect spriteRectangle)
 {
-    mAddedPositionX = 0;
-    mAddedPositionY = 0;
+    mMovedDistanceX = 0;
+    mMovedDistanceY = 0;
     mPositionX = positionX;
     mPositionY = positionY;
     mIndexX = indexX;
@@ -63,18 +63,18 @@ void Piece::draw(sf::RenderWindow &window)
 
 void Piece::movePieceByMouse(float displacementX, float displacementY)
 {
-    mPositionX-=mAddedPositionX;
-    mPositionY-=mAddedPositionY;
-    mAddedPositionX=displacementX;
-    mAddedPositionY=displacementY;
-    mPositionX+=mAddedPositionX;
-    mPositionY+=mAddedPositionY;
+    mPositionX-=mMovedDistanceX;
+    mPositionY-=mMovedDistanceY;
+    mMovedDistanceX=displacementX;
+    mMovedDistanceY=displacementY;
+    mPositionX+=mMovedDistanceX;
+    mPositionY+=mMovedDistanceY;
 }
 
 void Piece::restorePiecePosition()
 {
-    mPositionX-=mAddedPositionX;
-    mPositionY-=mAddedPositionY;
-    mAddedPositionX=0;
-    mAddedPositionY=0;
+    mPositionX-=mMovedDistanceX;
+    mPositionY-=mMovedDistanceY;
+    mMovedDistanceX=0;
+    mMovedDistanceY=0;
 }

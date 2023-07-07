@@ -1,16 +1,19 @@
 #include "../Headers/Board.h"
 
-Board::Board(const std::string &setupFilepath)
+Board::Board(float boardSizeX, float boardSizeY, const std::string &setupFilepath)
 {
+    mBoardSizeX = boardSizeX;
+    mBoardSizeY = boardSizeY;
+
     setupBoardDataFromFile(setupFilepath);
     loadImage();
 
-    mPuzzles = new Piece[mRows*mColumns];
+    mPieces = new Piece[mRows*mColumns];
 }
 
 Board::~Board()
 {
-    delete[] mPuzzles;
+    delete[] mPieces;
 }
 
 void Board::setupBoardDataFromFile(const std::string &filepath)
@@ -28,8 +31,8 @@ void Board::setupBoardDataFromFile(const std::string &filepath)
     }
     setupFile.close();
 
-    mOffsetXBetweenPieces = ((float)ScreenX / mColumns);
-    mOffsetYBetweenPieces = ((float)ScreenY / mRows);
+    mPieceSizeX = ((float)mBoardSizeX / mColumns);
+    mPieceSizeY = ((float)mBoardSizeY / mRows);
 }
 
 void Board::loadImage()
@@ -46,15 +49,15 @@ void Board::setValuesOfAllPieces()
         for (int columnNumber=0; columnNumber<mColumns; columnNumber++)
         {
             //TODO verify float conversion, verify if rectangle would need scale
-            float positionX = mOffsetXBetweenPieces * columnNumber;
-            float positionY = mOffsetYBetweenPieces * rowNumber;
+            float positionX = mPieceSizeX * columnNumber;
+            float positionY = mPieceSizeY * rowNumber;
             int indexX = columnNumber;
             int indexY = rowNumber;
-            float scaleX = ScreenX / mImageSizeX;
-            float scaleY = ScreenY / mImageSizeY;
-            sf::IntRect spriteRectangle(positionX*mImageSizeX/ScreenX, positionY*mImageSizeY/ScreenY, mImageSizeX/mColumns, mImageSizeY/mRows);
+            float scaleX = mBoardSizeX / mImageSizeX;
+            float scaleY = mBoardSizeY / mImageSizeY;
+            sf::IntRect spriteRectangle(positionX*mImageSizeX/mBoardSizeX, positionY*mImageSizeY/mBoardSizeY, mImageSizeX/mColumns, mImageSizeY/mRows);
 
-            (mPuzzles[rowNumber*mColumns+columnNumber]).setValues(positionX, positionY, indexX, indexY, scaleX, scaleY, mImage, spriteRectangle);
+            (mPieces[rowNumber*mColumns+columnNumber]).setValues(positionX, positionY, indexX, indexY, scaleX, scaleY, mImage, spriteRectangle);
         }
     }
 }
@@ -66,7 +69,7 @@ void Board::shufflePieces()
         for (int columnNumber=0; columnNumber<mColumns; columnNumber++)
         {
             //TODO verify random function
-            Piece::swapPiecePositions( mPuzzles[rowNumber*mColumns+columnNumber], mPuzzles[ (rand() % mColumns)*mRows + (rand() % mRows) ] );
+            Piece::swapPiecePositions( mPieces[rowNumber*mColumns+columnNumber], mPieces[ (rand() % mColumns)*mRows + (rand() % mRows) ] );
         }
     }
 }
@@ -78,7 +81,7 @@ void Board::drawAll(sf::RenderWindow &window)
     {
         for (int columnNumber=0; columnNumber<mColumns; columnNumber++)
         {
-            mPuzzles[rowNumber*mColumns+columnNumber].draw(window);
+            mPieces[rowNumber*mColumns+columnNumber].draw(window);
         }
     }
     window.display();
@@ -91,7 +94,7 @@ void Board::drawAll(sf::RenderWindow &window, Piece &movingPiece)
     {
         for (int columnNumber=0; columnNumber<mColumns; columnNumber++)
         {
-            mPuzzles[rowNumber*mColumns+columnNumber].draw(window);
+            mPieces[rowNumber*mColumns+columnNumber].draw(window);
         }
     }
     movingPiece.draw(window);  //added for purposes of drawing the moving piece on the top
@@ -104,22 +107,22 @@ Piece* Board::identifyPieceByPosition(int positionX, int positionY)
     {
         for (int columnNumber=0; columnNumber<mColumns; columnNumber++)
         {
-            if (mPuzzles[rowNumber*mColumns+columnNumber].isPositionWithinPiece(positionX, positionY, mOffsetXBetweenPieces, mOffsetYBetweenPieces))
+            if (mPieces[rowNumber*mColumns+columnNumber].isPositionWithinPiece(positionX, positionY, mPieceSizeX, mPieceSizeY))
             {
-                return &(mPuzzles[rowNumber*mColumns+columnNumber]);
+                return &(mPieces[rowNumber*mColumns+columnNumber]);
             }
         }
     }
     return nullptr; //TODO add cases for when this nullptr is returned (even though it never should, not in a properly setup board)
 }
 
-bool Board::checkForVictory()
+bool Board::arePiecesInCorrectOrder()
 {
     for (int rowNumber=0; rowNumber<mRows; rowNumber++)
     {
         for (int columnNumber=0; columnNumber<mColumns; columnNumber++)
         {
-            if ( mPuzzles[rowNumber*mColumns+columnNumber].getIndexX()!=columnNumber || mPuzzles[rowNumber*mColumns+columnNumber].getIndexY()!=rowNumber)
+            if ( mPieces[rowNumber*mColumns+columnNumber].getIndexX()!=columnNumber || mPieces[rowNumber*mColumns+columnNumber].getIndexY()!=rowNumber)
             {
                 return false;
             }

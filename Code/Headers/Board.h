@@ -2,30 +2,26 @@
 #define PUZZLEWITHSFML_BOARD_H
 
 #include <fstream>
-#include <wtypes.h>
 
 #include <SFML/Graphics.hpp>
 
 #include "Piece.h"
 
-//TODO maybe change names and places later
-#define ScreenX GetSystemMetrics(SM_CXSCREEN)
-#define ScreenY GetSystemMetrics(SM_CYSCREEN)
-
 class Board
 {
 private:
-    Piece *mPuzzles;//TODO rename to mPieces for consistency
+    float mBoardSizeX, mBoardSizeY;
     int mRows, mColumns;
+    float mPieceSizeX, mPieceSizeY;//common across all pieces
 
     float mImageSizeX, mImageSizeY;
     sf::Texture mImage;
     std::string mImageFilename;
 
-    float mOffsetXBetweenPieces, mOffsetYBetweenPieces;//TODO mRowHeight and mColumnWidth?
+    Piece *mPieces;
 
 public:
-    Board(const std::string &setupFilepath);//TODO explicit?
+    Board(float boardSizeX, float BoardSizeY, const std::string &setupFilepath);//TODO explicit?
     ~Board();
 
     void setValuesOfAllPieces();//TODO this too can be integrated into constructor
@@ -33,7 +29,7 @@ public:
     void drawAll(sf::RenderWindow &window);
     void drawAll(sf::RenderWindow &window, Piece &movingPiece);
     Piece* identifyPieceByPosition(int positionX, int positionY);
-    bool checkForVictory();//TODO hasWon?
+    bool arePiecesInCorrectOrder();
 
 private:
     void setupBoardDataFromFile(const std::string &filepath);
